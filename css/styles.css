@@ -1,0 +1,138 @@
+#cards .card-header,
+#hand .card-header,
+#expansionspanel .card-header {
+  padding: 0.2rem;
+  font-weight: bold;
+  background-color: #ccc0a8;
+  cursor: pointer;
+}
+
+#garlandaward .highlight{
+  background-color: rgb(253, 253, 193)
+}
+
+img+a {
+  margin: 0.5rem;
+}
+
+.playercard {
+  width: 15rem;
+  cursor: pointer;
+}
+
+.badge {
+  font-size: 12pt;
+}
+
+h3,
+#main-right label,
+footer p {
+  color: white;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.nav-link {
+  color: gold;
+  background: grey !important;
+}
+
+.nav-link.active {
+  background: var(--bs-nav-tabs-link-active-bg) !important;
+}
+
+.nav-link:hover {
+  color: goldenrod;
+}
+
+li.list-group-item {
+  cursor: pointer;
+  padding: 0.2rem;
+}
+
+.traveler {
+  background-color: #D5C1AF;
+}
+
+.production {
+  background-color: #C8ECC1;
+}
+
+.destination {
+  background-color: #DD9696;
+}
+
+.governance {
+  background-color: #C0C9E6;
+}
+
+.prosperity {
+  background-color: #E0ABF9;
+}
+
+html,
+body {
+  /* height: 97%; */
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-image: url('../img/everdell_background.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: 100%;
+  max-width: 60rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#header-right {
+  float: right;
+  display: flex;
+  flex-direction: column;
+  align-items: right;
+}
+
+header {
+  position: fixed;
+  z-index: 1;
+  height: 5rem;
+  padding: 0.1rem;
+  width: 100%;
+  max-width: 60rem;
+  vertical-align: middle;
+}
+
+main {
+  padding-top: 5rem;
+  min-height: 100%;
+  display: flex;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  max-width: 60rem;
+}
+
+footer {
+  padding-top: 2rem;
+  width: 100%;
+}
+
+#main-left {
+  width: 10rem;
+}
+
+#main-right {
+  min-height: 100%;
+  padding-left: 0.5rem;
+  width: calc(100% - 10.5rem);
+}
+
+#leftOverArea label {
+  width: 75pt;
+}
