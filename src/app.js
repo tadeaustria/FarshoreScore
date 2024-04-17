@@ -38,12 +38,6 @@ i18next
 class Application {
 
     constructor() {
-        this.bellfaire = false;
-        this.pearlbrook = false;
-        this.spirecrest = false;
-        this.mistwood = false;
-        this.newleaf = false;
-
         this.updateData();
 
         $('#nav-p1-tab').on('click', (e) => { this.activePlayer = this.players[0]; this.updatePlayerOutput(); });
@@ -56,8 +50,8 @@ class Application {
         // if site is left
         window.onbeforeunload = function () { return 'Are you sure?' };
 
-        Handlebars.registerHelper('isProsperityButNotWife', function (type, name) {
-            return type == TYPES.prosperity && name != basecards['wife'].name;
+        Handlebars.registerHelper('isProsperity', function (type) {
+            return type == TYPES.prosperity;
         });
     }
 
@@ -69,22 +63,9 @@ class Application {
     }
 
     updateData() {
-        this.bellfaire = $('#flexSwitchCheckBellfaire').is(':checked');
-        this.pearlbrook = $('#flexSwitchCheckPearlbrook').is(':checked');
-        this.spirecrest = $('#flexSwitchCheckSpirecrest').is(':checked');
-        this.mistwood = $('#flexSwitchCheckMistwood').is(':checked');
-        this.newleaf = $('#flexSwitchCheckNewleaf').is(':checked');
+        // this.bellfaire = $('#flexSwitchCheckBellfaire').is(':checked');
 
         this.cards = [...Object.values(basecards)].filter((card) => card.getAvailability(this));
-        this.basicEvents = [...Object.values(basicEvents)].filter((event) => event.getAvailability(this));
-        this.specialEvents = [...Object.values(specialEvents)].filter((event) => event.getAvailability(this));
-        this.garlandAwards = [...Object.values(garlandAwards)].filter((award) => award.getAvailability(this));
-        this.wonders = [...Object.values(wonders)].filter((wonders) => wonders.getAvailability(this));
-        this.adornments = [...Object.values(adornments)].filter((adornment) => adornment.getAvailability(this))
-        this.expeditions = [...Object.values(expeditions)].filter((expedition) => expedition.getAvailability(this));
-        this.discoveries = [...Object.values(discoveries)].filter((discovery) => discovery.getAvailability(this));
-        this.visitors = this.newleaf ? [...Object.values(visitors)] : [];
-        this.playerpowers = [...Object.values(playerpowers)].filter((playerpower) => playerpower.getAvailability(this));
 
         this.reset();
         this.buildCards();
@@ -104,11 +85,7 @@ class Application {
 
     // Sets switches in UI to stored values
     reset_expansions_ui() {
-        $('#flexSwitchCheckBellfaire').prop('checked', this.bellfaire);
-        $('#flexSwitchCheckPearlbrook').prop('checked', this.pearlbrook);
-        $('#flexSwitchCheckSpirecrest').prop('checked', this.spirecrest);
-        $('#flexSwitchCheckMistwood').prop('checked', this.mistwood);
-        $('#flexSwitchCheckNewleaf').prop('checked', this.newleaf);
+        // $('#flexSwitchCheckBellfaire').prop('checked', this.bellfaire);
     }
 
     btn_reset() {
@@ -118,7 +95,8 @@ class Application {
     reset() {
         this.players = [new Player("p1", this), new Player("p2", this), new Player("p3", this), new Player("p4", this)];
         this.activePlayer = this.players[0];
-        this.players.forEach((player) => player.showPlayer());
+        // TODO Enable me after fix
+        // this.players.forEach((player) => player.showPlayer());
         this.activeAward = null;
         $("#nav-p1-tab").tab('show');
         this.updatePlayerOutput();
@@ -148,50 +126,7 @@ class Application {
 
             this.activePlayer.addTown(card);
             this.setCardDisable(card);
-
-            //Special handling photographer
-            if (card == basecards['photographer']) {
-                let prosperitiesInOtherTowns = new Set();
-                for (let player of this.players) {
-                    if (player == this.activePlayer)
-                        continue;
-                    player.town.filter((card) => card.type == TYPES.prosperity).forEach(prosperitiesInOtherTowns.add, prosperitiesInOtherTowns);
-                }
-                // If any other has also photographer, add cards of own town as well
-                if (prosperitiesInOtherTowns.has(basecards['photographer'])) {
-                    this.activePlayer.town.filter((card) => card.type == TYPES.prosperity).forEach(prosperitiesInOtherTowns.add, prosperitiesInOtherTowns);
-                }
-                prosperitiesInOtherTowns.delete(basecards['photographer']);
-
-                let template = Handlebars.compile($("#photographer-template").html());
-                let cards = [];
-                for (const card of prosperitiesInOtherTowns.values()) {
-                    cards.push({ name: card.name, points: card.getAdditionalPoints(this.activePlayer) });
-                }
-
-                let html = template({
-                    cards: cards,
-                }, {
-                    allowProtoMethodsByDefault: true
-                });
-                $('#photographer_modal_body').html(html).localize();
-                $('#photographer_modal').modal('show');
-            }
-
-            if (this.activeAward) {
-                this.calculateAward();
-                this.players.forEach((player) => player.showPlayer());
-            } else if (this.mistwood) {
-                this.players.forEach((player) => player.showPlayer());
-                this.activePlayer.showPlayer();
-            }
         }
-    }
-
-    chooseEffectCopy(cardname) {
-        $('#photographer_modal').modal('hide');
-        this.activePlayer.photographerChoiceCardName = cardname;
-        this.activePlayer.showPlayer();
     }
 
     removeFromActivePlayer(cardIndex) {
@@ -220,151 +155,19 @@ class Application {
     removeSpEventFromActivePlayer(eventIndex) {
         let eventName = this.activePlayer.removeSpecialEvent(eventIndex);
         $("#event_" + eventName).removeClass("disabled");
-        // $("#specialevent-header").prop("disabled", false).tab("hide");
     }
 
-    addJourneyToActivePlayer(journeyIndex) {
-        let value = journeys[journeyIndex];
-        this.activePlayer.journeys.push(value);
+    addMapToActivePlayer(mapName) {
+        let value = maps[mapName];
+        this.activePlayer.maps.push(value);
         this.vibrate(50);
-        if (value > 2) {
-            $("#journey_" + value).removeClass("text-bg-warning").addClass("text-bg-secondary disabled");
-        }
         this.activePlayer.showPlayer();
+        this.setCardsDisable();
     }
 
-    removeJourneyFromActivePlayer(journeyIndex) {
-        let value = this.activePlayer.removeJourney(journeyIndex);
-        if (value > 2)
-            $("#journey_" + value).removeClass("text-bg-secondary disabled").addClass("text-bg-warning");
-    }
-
-    addWonderToActivePlayer(wonderName) {
-        this.activePlayer.wonders.push(wonders[wonderName]);
-        this.vibrate(50);
-        $("#wonder_" + wonderName).addClass("disabled");
-        this.activePlayer.showPlayer();
-    }
-
-    removeWonderFromActivePlayer(wonderIndex) {
-        let wonderName = this.activePlayer.removeWonder(wonderIndex);
-        $("#wonder_" + wonderName).removeClass("disabled");
-    }
-
-    addAdornmentToActivePlayer(adornmentName) {
-        if (this.activePlayer.adornments.length < 2) {
-            this.activePlayer.adornments.push(adornments[adornmentName]);
-            this.vibrate(50);
-            $("#adornment_" + adornmentName).addClass("disabled");
-            this.activePlayer.showPlayer();
-        } else {
-            $("#alert-adornmentlimit").fadeTo(3000, 500).slideUp(500, function () {
-                $("#alert-adornmentlimit").slideUp(500);
-            });
-        }
-    }
-
-    removeAdornmentFromActivePlayer(adornmentIndex) {
-        let adornmentName = this.activePlayer.removeAdornment(adornmentIndex);
-        $("#adornment_" + adornmentName).removeClass("disabled");
-    }
-
-    addExpeditionToActivePlayer(expeditionName) {
-        if (this.activePlayer.expeditions.length < 3) {
-            this.activePlayer.expeditions.push(expeditions[expeditionName]);
-            this.vibrate(50);
-            $("#expedition_" + expeditionName).addClass("disabled");
-            this.activePlayer.showPlayer();
-        } else {
-            $("#alert-expeditionlimit").fadeTo(3000, 500).slideUp(500, function () {
-                $("#alert-expeditionlimit").slideUp(500);
-            });
-        }
-    }
-
-    removeExpeditionFromActivePlayer(expeditionIndex) {
-        let expeditionName = this.activePlayer.removeExpedition(expeditionIndex);
-        $("#expedition_" + expeditionName).removeClass("disabled");
-    }
-
-    addDiscoveryToActivePlayer(discoveryName) {
-        if (this.activePlayer.discoveries.length < 2) {
-            this.activePlayer.discoveries.push(discoveries[discoveryName]);
-            this.vibrate(50);
-            $("#discovery_" + discoveryName).addClass("disabled");
-            this.activePlayer.showPlayer();
-        } else {
-            $("#alert-discoverylimit").fadeTo(3000, 500).slideUp(500, function () {
-                $("#alert-discoverylimit").slideUp(500);
-            });
-        }
-    }
-
-    removeDiscoveryFromActivePlayer(discoveryIndex) {
-        let discoveryName = this.activePlayer.removeDiscovery(discoveryIndex);
-        $("#discovery_" + discoveryName).removeClass("disabled");
-    }
-
-    addVisitorToActivePlayer(visitorName) {
-        this.activePlayer.visitors.push(visitors[visitorName]);
-        this.vibrate(50);
-        $("#visitor_" + visitorName).addClass("disabled");
-        this.activePlayer.showPlayer();
-    }
-
-    removeVisitorFromActivePlayer(visitorIndex) {
-        let visitorName = this.activePlayer.removeVisitor(visitorIndex);
-        $("#visitor_" + visitorName).removeClass("disabled");
-    }
-
-    chooseAward(awardName) {
-        if (this.activeAward)
-            $("#award_" + this.activeAward.name).removeClass("highlight");
-        $("#award_" + awardName).addClass("highlight");
-        this.vibrate(50);
-        this.activeAward = garlandAwards[awardName];
-        this.calculateAward();
-        this.players.forEach((player) => player.showPlayer());
-    }
-
-    removeAward() {
-        $("#award_" + this.activeAward.name).removeClass("highlight");
-        this.activeAward = null;
-        this.players.forEach((player) => {
-            player.garlandAchievemenPoints = 0;
-            player.showPlayer();
-        });
-    }
-
-    setPlayerpowerToActivePlayer(playerpowername){
-        this.activePlayer.playerpowername = playerpowername;
-        $("#playerpower_" + playerpowername).addClass("disabled");
-        this.activePlayer.showPlayer();
-    }
-    
-    removePlayerpowerFromActivePlayer(){
-        $("#playerpower_" + this.activePlayer.playerpowername).removeClass("disabled");
-        this.activePlayer.playerpowername = null;
-        this.activePlayer.showPlayer();
-    }
-
-    calculateAward() {
-        let bucket = {};
-        for (let player of this.players) {
-            let value = this.activeAward.rankingFunction(player);
-            player.garlandAchievemenPoints = 0;
-            if (!(value in bucket)) {
-                bucket[value] = [];
-            }
-            bucket[value].push(player);
-        }
-        let winners = Int8Array.from(Object.keys(bucket)).sort().reverse();
-        if (winners[0] > 0) {
-            bucket[winners[0]].forEach((player) => player.garlandAchievemenPoints = this.activeAward.pointsFirst);
-        }
-        if (winners[1] > 0) {
-            bucket[winners[1]].forEach((player) => player.garlandAchievemenPoints = this.activeAward.pointsSecond);
-        }
+    removeMapFromActivePlayer(mapIndex) {
+        let value = this.activePlayer.removeMap(mapIndex);
+        this.setCardsDisable();
     }
 
     setLanguage(lang) {
@@ -401,26 +204,10 @@ class Application {
         for (const [, suit] of Object.entries(suits)) {
             suit.sort((a, b) => { return getCardName(a).localeCompare(getCardName(b)); });
         }
-        this.specialEvents.sort((a, b) => { return getEventName(a).localeCompare(getEventName(b)); });
-        this.garlandAwards.sort((a, b) => { return getAwardName(a).localeCompare(getAwardName(b)); });
-        this.adornments.sort((a, b) => { return getAdornmentName(a).localeCompare(getAdornmentName(b)); });
-        this.expeditions.sort((a, b) => { return getExpeditionName(a).localeCompare(getExpeditionName(b)); });
-        this.discoveries.sort((a, b) => { return getDiscoveryName(a).localeCompare(getDiscoveryName(b)); });
-        this.visitors.sort((a, b) => { return getVisitorName(a).localeCompare(getVisitorName(b)); });
-        this.playerpowers.sort((a, b) => { return getPlayerpowerName(a).localeCompare(getPlayerpowerName(b)); });
 
         let html = template({
             suits: suits,
-            basicEvents: this.basicEvents,
-            specialEvents: this.specialEvents,
-            journeys: journeys,
-            garlandAwards: this.garlandAwards,
-            wonders: this.wonders,
-            adornments: this.adornments,
-            expeditions: this.expeditions,
-            discoveries: this.discoveries,
-            visitors: this.visitors,
-            playerpowers: this.playerpowers
+            maps: maps
         }, {
             allowProtoMethodsByDefault: true
         });
@@ -442,17 +229,14 @@ class Application {
     setCardsDisable() {
         this.cards.forEach(this.setCardDisable, this);
 
+        let maps_map = maps;
+        Object.values(maps_map).forEach((value) => Object.assign(value, {count: 0}));
         this.players.forEach((player) => {
-            player.basicEvents.forEach((event) => { $("#event_" + event).addClass('disabled'); });
-            player.specialEvents.forEach((event) => { $("#event_" + event.name).addClass('disabled'); });
-            player.journeys.forEach((value) => {
-                if (value > 2) {
-                    $("#journey_" + journeys.indexOf(value)).addClass("disabled");
-                }
-            })
+            player.maps.forEach((map) => maps_map[map.name].count++);
         });
+        Object.values(maps_map).forEach((map) => map.count >= map.maximum ? $("#map_" + map.name).addClass("disabled") : $("#map_" + map.name).removeClass("disabled"));
     }
-
+    
     setCardDisable(card) {
         let cardItem = $("#card_" + card.name);
         if (!this.isCardAvailable(card)) {
@@ -460,13 +244,6 @@ class Application {
         } else {
             cardItem.removeClass("disabled");
         }
-    }
-
-    eventCardSetValue(name) {
-        specialEvents[name].value = $("#value_" + name).val();
-        specialEvents[name].points = specialEvents[name].getPoints(this, this.activePlayer);
-        $("#event_value_" + name).html(specialEvents[name].points);
-        this.playerRefresh();
     }
 
     playerRefresh() {
@@ -479,10 +256,20 @@ class Application {
         this.activePlayer.showPlayer();
     }
 
+    setActivePlayerShipSteps() {
+        this.activePlayer.ship_steps = parseInt($("#value_ship_steps").val());
+        $("#value_ship_steps_badge").text(this.activePlayer.getShipPoints());
+        this.activePlayer.showPlayer();
+    }
+
     buildLeftResources() {
         let template = Handlebars.compile($("#resource-template").html());
+
+        // hack to only show treasure ressource
+        let x = {'treasure': RESOURCES.treasure};
+
         let html = template({
-            resources: RESOURCES
+            resources: x
         });
         $('#leftResources').html(html);
     }

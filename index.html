@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en" manifest="fantasy-realms.appcache">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title>Everdell: App of Scoring</title>
-    <meta name="description" content="Everdell: App of Scoring">
+    <title>Farshore: App of Scoring</title>
+    <meta name="description" content="Farshore: App of Scoring">
     <meta name="author" content="Tade Barthler">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="msapplication-TileColor" content="#ffffff">
@@ -20,7 +20,7 @@
   <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-icon-152x152.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-icon-180x180.png">
   <link rel="manifest" href="manifest.json">-->
-    <link rel="icon" type="image/png" sizes="192x192" href="img/icons/icon_192.png">  
+    <link rel="icon" type="image/png" sizes="192x192" href="img/icons/icon_192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="img/icons/icon_32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="img/icons/icon_92.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
@@ -38,19 +38,19 @@
     <script src="src/deck.js"></script>
     <script src="src/player.js"></script>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-34D0F63JQ8"></script>
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-34D0F63JQ8"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
     
       gtag('config', 'G-34D0F63JQ8');
-    </script>
+    </script> -->
 </head>
 
 <body>
     <header>
-        <img src="img/everdell_logo.png" style="height: 4.8rem; max-width: 100%;"></img>
+        <img src="img/farshore_logo.png" style="height: 4.8rem; max-width: 100%;"></img>
         <div id="header-right">
             <button id="dropdownMenu" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false" data-i18n="gen.lang">
@@ -58,9 +58,9 @@
             <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                 <button class="dropdown-item" type="button" onclick="app.setLanguage('en')">English</button>
                 <button class="dropdown-item" type="button" onclick="app.setLanguage('de')">Deutsch</button>
-                <button class="dropdown-item" type="button" onclick="app.setLanguage('pl')">Polski</button>
+                <!-- <button class="dropdown-item" type="button" onclick="app.setLanguage('pl')">Polski</button>
                 <button class="dropdown-item" type="button" onclick="app.setLanguage('es')">Español</button>
-                <button class="dropdown-item" type="button" onclick="app.setLanguage('nl')">Nederlands</button>
+                <button class="dropdown-item" type="button" onclick="app.setLanguage('nl')">Nederlands</button> -->
             </div>
             <button id="clear" type="button" class="btn btn-danger" onclick="app.btn_reset()"
                 data-i18n="gen.reset"></button>
@@ -68,36 +68,6 @@
     </header>
     <main class="container-fluid">
         <script id="cards-template" type="text/x-handlebars-template">
-        {{#if garlandAwards}}
-        <div class="card">
-            <div class="card-header" role="tab" id="garlandaward-header" data-bs-toggle="collapse" data-bs-target="#garlandaward"
-                data-bs-parent="#cards" href="#garlandaward" aria-expanded="false" aria-controls="garlandaward">
-                <img src="img/garlandaward.png" width="32" height="32"><a data-i18n="gen.garlandaward"></a>
-            </div>
-            <div id="garlandaward" class="collapse" role="tabpanel" data-bs-parent="#cards" aria-labelledby="garlandaward-header">
-                <ul class="list-group">
-                    {{#each garlandAwards}}
-                    <li id="award_{{name}}" class="list-group-item" onclick="app.chooseAward('{{name}}')"
-                        data-i18n="award.{{name}}"></li>
-                    {{/each}}
-                </ul>
-            </div>
-        {{/if}}
-        {{#if playerpowers}}
-        <div class="card">
-            <div class="card-header" role="tab" id="playerpower-header" data-bs-toggle="collapse" data-bs-target="#playerpower"
-                data-bs-parent="#cards" href="#playerpower" aria-expanded="false" aria-controls="playerpower">
-                <img src="img/playerpower.png" width="32" height="32"><a data-i18n="gen.playerpower"></a>
-            </div>
-            <div id="playerpower" class="collapse" role="tabpanel" data-bs-parent="#cards" aria-labelledby="playerpower-header">
-                <ul class="list-group">
-                    {{#each playerpowers}}
-                    <li id="playerpower_{{name}}" class="list-group-item" onclick="app.setPlayerpowerToActivePlayer('{{name}}')"
-                        data-i18n="playerpower.{{name}}"></li>
-                    {{/each}}
-                </ul>
-            </div>
-        {{/if}}
         {{#each suits}}
         <div class="card">
             <div class="card-header" role="tab" id="{{@key}}-header" data-bs-toggle="collapse" data-bs-target="#{{@key}}"
@@ -114,127 +84,16 @@
             </div>
         </div>
         {{/each}}
-        {{#if basicEvents}}
         <div class="card">
-            <div class="card-header" role="tab" id="basicevent-header" data-bs-toggle="collapse" data-bs-target="#basicevent"
-                data-bs-parent="#cards" href="#basicevent" aria-expanded="false" aria-controls="basicevent">
-                <img src="img/basicevent.png" width="32" height="32"><a data-i18n="gen.basicevent"></a>
+            <div class="card-header" role="tab" id="map-header" data-bs-toggle="collapse" data-bs-target="#map"
+                data-bs-parent="#cards" href="#map" aria-expanded="false" aria-controls="map">
+                <img src="img/map.png" width="32" height="32"><a data-i18n="gen.maps"></a>
             </div>
-            <div id="basicevent" class="collapse" role="tabpanel" data-bs-parent="#cards" aria-labelledby="basicevent-header">
+            <div id="map" class="collapse" role="tabpanel" data-bs-parent="#cards" aria-labelledby="map-header">
                 <ul class="list-group">
-                    {{#each basicEvents}}
-                    <li id="event_{{name}}" class="list-group-item" onclick="app.addEventToActivePlayer('{{name}}')"
-                        data-i18n="event.{{name}}"></li>
-                    {{/each}}
-                </ul>
-            </div>
-        </div>
-        {{/if}}
-        <div class="card">
-            <div class="card-header" role="tab" id="specialevent-header" data-bs-toggle="collapse" data-bs-target="#specialevent"
-                data-bs-parent="#cards" href="#specialevent" aria-expanded="false" aria-controls="specialevent">
-                <img src="img/specialevent.png" width="32" height="32"><a data-i18n="gen.specialevent"></a>
-            </div>
-            <div id="specialevent" class="collapse" role="tabpanel" data-bs-parent="#cards" aria-labelledby="specialevent-header">
-                <ul class="list-group">
-                    {{#each specialEvents}}
-                    <li id="event_{{name}}" class="list-group-item" onclick="app.addEventToActivePlayer('{{name}}')"
-                        data-i18n="event.{{name}}">{{name}}</li>
-                    {{/each}}
-                </ul>
-            </div>
-        </div>
-        {{#if wonders}}
-        <div class="card">
-            <div class="card-header" role="tab" id="wonders-header" data-bs-toggle="collapse" data-bs-target="#wonders"
-                data-bs-parent="#cards" href="#wonders" aria-expanded="false" aria-controls="wonders">
-                <img src="img/wonder25.png" width="32" height="32"><a data-i18n="gen.wonders"></a>
-            </div>
-            <div id="wonders" class="collapse" role="tabpanel" data-bs-parent="#cards" aria-labelledby="wonders-header">
-                <ul class="list-group">
-                    {{#each wonders}}
-                    <li id="wonder_{{name}}" class="list-group-item" onclick="app.addWonderToActivePlayer('{{name}}')"
-                        data-i18n="wonder.{{name}}"></li>
-                    <span class="badge text-bg-warning">{{points}}</span>
-                    {{/each}}
-                </ul>
-            </div>
-        {{/if}}
-        {{#if adornments}}
-        <div class="card">
-            <div class="card-header" role="tab" id="adornments-header" data-bs-toggle="collapse" data-bs-target="#adornments"
-                data-bs-parent="#cards" href="#adornments" aria-expanded="false" aria-controls="adornments">
-                <img src="img/adornments.png" width="32" height="32"><a data-i18n="gen.adornments"></a>
-            </div>
-            <div id="adornments" class="collapse" role="tabpanel" data-bs-parent="#cards" aria-labelledby="adornments-header">
-                <ul class="list-group">
-                    {{#each adornments}}
-                    <li id="adornment_{{name}}" class="list-group-item" onclick="app.addAdornmentToActivePlayer('{{name}}')"
-                        data-i18n="adornment.{{name}}"></li>
-                    {{/each}}
-                </ul>
-            </div>
-        </div>
-        {{/if}}
-        {{#if expeditions}}
-        <div class="card">
-            <div class="card-header" role="tab" id="expeditions-header" data-bs-toggle="collapse" data-bs-target="#expeditions"
-                data-bs-parent="#cards" href="#expeditions" aria-expanded="false" aria-controls="expeditions">
-                <img src="img/expeditions.png" width="32" height="32"><a data-i18n="gen.expeditions"></a>
-            </div>
-            <div id="expeditions" class="collapse" role="tabpanel" data-bs-parent="#cards" aria-labelledby="expeditions-header">
-                <ul class="list-group">
-                    {{#each expeditions}}
-                    <li id="expedition_{{name}}" class="list-group-item" onclick="app.addExpeditionToActivePlayer('{{name}}')"
-                        data-i18n="expedition.{{name}}"></li>
-                    {{/each}}
-                </ul>
-            </div>
-        </div>
-        {{/if}}
-        {{#if discoveries}}
-        <div class="card">
-            <div class="card-header" role="tab" id="discoveries-header" data-bs-toggle="collapse" data-bs-target="#discoveries"
-                data-bs-parent="#cards" href="#discoveries" aria-expanded="false" aria-controls="discoveries">
-                <img src="img/discoveries.png" width="32" height="32"><a data-i18n="gen.discoveries"></a>
-            </div>
-            <div id="discoveries" class="collapse" role="tabpanel" data-bs-parent="#cards" aria-labelledby="discoveries-header">
-                <ul class="list-group">
-                    {{#each discoveries}}
-                    <li id="discovery_{{name}}" class="list-group-item" onclick="app.addDiscoveryToActivePlayer('{{name}}')"
-                        data-i18n="discovery.{{name}}"></li>
-                    {{/each}}
-                </ul>
-            </div>
-        </div>
-        {{/if}}
-        {{#if visitors}}
-        <div class="card">
-            <div class="card-header" role="tab" id="visitors-header" data-bs-toggle="collapse" data-bs-target="#visitors"
-                data-bs-parent="#cards" href="#visitors" aria-expanded="false" aria-controls="visitors">
-                <img src="img/visitors.png" width="32" height="42"><a data-i18n="gen.visitors"></a>
-            </div>
-            <div id="visitors" class="collapse" role="tabpanel" data-bs-parent="#cards" aria-labelledby="visitors-header">
-                <ul class="list-group">
-                    {{#each visitors}}
-                    <li id="visitor_{{name}}" class="list-group-item" onclick="app.addVisitorToActivePlayer('{{name}}')"
-                        data-i18n="visitor.{{name}}"></li>
-                    {{/each}}
-                </ul>
-            </div>
-        </div>
-        {{/if}}
-        <div class="card">
-            <div class="card-header" role="tab" id="journey-header" data-bs-toggle="collapse" data-bs-target="#journey"
-                data-bs-parent="#cards" href="#journey" aria-expanded="false" aria-controls="journey">
-                <img src="img/journey.png" width="32" height="32"><a data-i18n="gen.journey"></a>
-            </div>
-            <div id="journey" class="collapse" role="tabpanel" data-bs-parent="#cards" aria-labelledby="journey-header">
-                <ul class="list-group">
-                    {{#each journeys}}
-                    <li id="journey_{{this}}" class="list-group-item text-bg-warning" onclick="app.addJourneyToActivePlayer('{{@index}}')">
-                        {{this}}
-                    </li>
+                    {{#each maps}}
+                    <li id="map_{{name}}" class="list-group-item" onclick="app.addMapToActivePlayer('{{name}}')"
+                        data-i18n="map.{{name}}">{{name}}</li>
                     {{/each}}
                 </ul>
             </div>
@@ -247,192 +106,62 @@
                 </span>
             </div>
             <div class="d-flex flex-wrap">
-                {{#if playerpower}}
-                <h3 data-i18n="gen.playerpower" class="w-100"></h3>
-                <div class="playercard card w-100 p-2" role="tab" onclick="app.removePlayerpowerFromActivePlayer()">
-                    <div class="d-flex">
-                        <div class="flex-grow-1" data-i18n="playerpower.{{playerpower}}"></div>
-                    </div>
-                </div>
-                {{/if}}
                 <h3 data-i18n="gen.town" class="w-100"></h3>
                 {{#each cards}}
                 <div class="playercard card p-2 {{type}}" role="tab" onclick="app.removeFromActivePlayer('{{@index}}')">
                     <div class="d-flex">
-                        <div class="flex-grow-1" data-i18n="card.{{name}}" data-i18n-options='{ "card": "{{../photographerCardName}}" }'></div>
+                        <div class="flex-grow-1" data-i18n="card.{{name}}"></div>
                         <img src="img/{{kind}}.png" height="20px">
                         <span class="badge text-bg-warning">{{points}}</span>
-                        {{#if (isProsperityButNotWife type name)}}
+                        {{#if (isProsperity type)}}
                         <div>+</div><span class="badge text-bg-warning">{{addPoints}}</span>
                         {{/if}}
                     </div>
                 </div>
                 {{/each}}
-                {{#if additionalWifePoints}}
-                <div class="playercard card w-100 p-2 prosperity" style="margin-top: 1rem;">
+                {{#if maps}}
+                <h3 data-i18n="gen.maps" class="w-100"></h3>
+                {{#each maps}}
+                <div class="playercard card p-2" role="tab" onclick="app.removeMapFromActivePlayer('{{@index}}')">
                     <div class="d-flex">
-                        <div class="flex-grow-1" data-i18n="gen.addWifePoints"></div>
-                        <span class="badge text-bg-warning">{{additionalWifePoints}}</span>
-                    </div>
-                </div>
-                {{/if}}
-                {{#if basicEvents}}
-                <h3 data-i18n="gen.basicevent" class="w-100"></h3>
-                {{#each basicEvents}}
-                <div class="playercard card p-2" role="tab" onclick="app.removeEventFromActivePlayer('{{@index}}')">
-                    <div class="d-flex">
-                        <div class="flex-grow-1" data-i18n="event.{{name}}"></div>
-                        <span class="badge text-bg-warning">{{points}}</span>
-                    </div>
-                </div>
-                {{/each}}
-                {{/if}}
-                {{#if specialEvents}}
-                <h3 data-i18n="gen.specialevent" class="w-100"></h3>
-                {{#each specialEvents}}
-                <div class="playercard card p-2" role="tab">
-                    <div class="d-flex">
-                        <div class="flex-grow-1" data-i18n="event.{{name}}" onclick="app.removeSpEventFromActivePlayer('{{@index}}')"></div>
-                        <span id="event_value_{{name}}" class="badge text-bg-warning" onclick="app.removeSpEventFromActivePlayer('{{@index}}')">{{points}}</span>
-                    </div>
-                    {{#if input}}
-                    <input id="value_{{name}}" type="range" class="form-range" min="0" value="{{value}}" max="{{inputMax}}" oninput="app.eventCardSetValue('{{name}}')">
-                    {{/if}}
-                </div>
-                {{/each}}
-                {{/if}}
-                {{#if wonders}}
-                <h3 data-i18n="gen.wonders" class="w-100"></h3>
-                {{#each wonders}}
-                <div class="playercard card p-2" role="tab" onclick="app.removeWonderFromActivePlayer('{{@index}}')">
-                    <div class="d-flex">
-                        <div class="flex-grow-1" data-i18n="wonder.{{name}}"></div>
-                        <span class="badge text-bg-warning">{{points}}</span>
-                    </div>
-                </div>
-                {{/each}}
-                {{/if}}
-                {{#if adornments}}
-                <h3 data-i18n="gen.adornments" class="w-100"></h3>
-                {{#each adornments}}
-                <div class="playercard card p-2" role="tab" onclick="app.removeAdornmentFromActivePlayer('{{@index}}')">
-                    <div class="d-flex">
-                        <div class="flex-grow-1" data-i18n="adornment.{{name}}"></div>
-                        <span class="badge text-bg-warning">{{points}}</span>
-                    </div>
-                </div>
-                {{/each}}
-                {{/if}}
-                {{#if expeditions}}
-                <h3 data-i18n="gen.expeditions" class="w-100"></h3>
-                {{#each expeditions}}
-                <div class="playercard card p-2" role="tab" onclick="app.removeExpeditionFromActivePlayer('{{@index}}')">
-                    <div class="d-flex">
-                        <div class="flex-grow-1" data-i18n="expedition.{{name}}"></div>
-                        <span class="badge text-bg-warning">{{points}}</span>
-                    </div>
-                </div>
-                {{/each}}
-                {{/if}}
-                {{#if discoveries}}
-                <h3 data-i18n="gen.discoveries" class="w-100"></h3>
-                {{#each discoveries}}
-                <div class="playercard card p-2" role="tab" onclick="app.removeDiscoveryFromActivePlayer('{{@index}}')">
-                    <div class="d-flex">
-                        <div class="flex-grow-1" data-i18n="discovery.{{name}}"></div>
-                        <span class="badge text-bg-warning">{{points}}</span>
-                    </div>
-                </div>
-                {{/each}}
-                {{/if}}
-                {{#if visitors}}
-                <h3 data-i18n="gen.visitors" class="w-100"></h3>
-                {{#each visitors}}
-                <div class="playercard card p-2" role="tab" onclick="app.removeVisitorFromActivePlayer('{{@index}}')">
-                    <div class="d-flex">
-                        <div class="flex-grow-1" data-i18n="visitor.{{name}}"></div>
+                        <div class="flex-grow-1" data-i18n="map.{{name}}"></div>
                         <span class="badge text-bg-warning">{{points}}</span>
                     </div>
                 </div>
                 {{/each}}
                 {{/if}}
             </div>
-            {{#if journeys}}
-            <h3 data-i18n="gen.journey" class="w-100"></h3>
-            <div class="d-flex flex-wrap">
-                {{#each journeys}}
-                <div class="playercard card" role="tab" onclick="app.removeJourneyFromActivePlayer('{{@index}}')">
-                    <span class="badge text-bg-warning">{{this}}</span>
-                </div>
-                {{/each}}
-            </div>
-            {{/if}}
-            {{#if award}}
-            <h3 data-i18n="award.{{award.name}}" class="w-100"></h3>
-            <div class="playercard card" role="tab" onclick="app.removeAward()">
-                <span class="badge text-bg-warning">{{award.points}}</span>
-            </div>
-            {{/if}}
         </script>
         <script id="resource-template" type="text/x-handlebars-template">
             {{#each resources}}
             <div id="area_{{@key}}">
                 <div class="d-flex">
                     <label for="value_{{@key}}" data-i18n="res.{{@key}}"></label>
-                    <!-- <img src="img/{{@key}}.png" height="20px" width="20px"></img> -->
                     <span id="value_badge_{{@key}}" class="badge text-bg-light">0</span>
                 </div>
-                <input id="value_{{@key}}" type="range" class="form-range" min="0" value="0" max="6" oninput="app.setResource('{{@key}}')">
-            </div>
-            {{/each}}
-        </script>
-        <script id="photographer-template" type="text/x-handlebars-template">
-            {{#each cards}}
-            <div class="playercard card p-2 prosperity" role="tab" onclick="app.chooseEffectCopy('{{name}}')">
-                <div class="d-flex">
-                    <div class="flex-grow-1" data-i18n="card.{{name}}">{{name}}</div>
-                    <span class="badge text-bg-warning">{{points}}</span>
-                </div>
+                <input id="value_{{@key}}" type="range" class="form-range" min="0" value="0" max="20" oninput="app.setResource('{{@key}}')">
             </div>
             {{/each}}
         </script>
         <div id="main-left">
-            <div id="expansionspanel" class="panel" role="tablist" aria-multiselectable="true">
+            <!-- <div id="expansionspanel" class="panel" role="tablist" aria-multiselectable="true">
                 <div id="cardExpansion" class="card">
                     <div class="card-header" role="tab" id="expansions-header" data-bs-toggle="collapse"
-                        data-bs-target="#expansions" data-bs-parent="#expansionspanel" href="#expansions" aria-expanded="false"
-                        aria-controls="expansions">
+                        data-bs-target="#expansions" data-bs-parent="#expansionspanel" href="#expansions"
+                        aria-expanded="false" aria-controls="expansions">
                         <img src="img/expansions.png" width="32" height="32"><a data-i18n="gen.expansions"></a>
                     </div>
                     <div id="expansions" class="collapse" role="tabpanel" data-bs-parent="#expansionspanel"
                         aria-labelledby="expansions-header">
                         <ul class="list-group">
-                            <!-- <li id="card_{{name}}" class="list-group-item" onclick="app.addToActivePlayer('{{name}}')"
-                            data-i18n="card.{{name}}">{{name}}</li> -->
                             <div class="form-check form-switch" onchange="app.updateExpansions()">
                                 <label class="form-check-label" for="flexSwitchCheckBellfaire" data-i18n="expansion.bellfaire">Bellfaire</label>
                                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckBellfaire">
                             </div>
-                            <div class="form-check form-switch" onchange="app.updateExpansions()">
-                                <label class="form-check-label" for="flexSwitchCheckPearlbrook" data-i18n="expansion.pearlbrook">Pearlbrook</label>
-                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckPearlbrook">
-                            </div>
-                            <div class="form-check form-switch" onchange="app.updateExpansions()">
-                                <label class="form-check-label" for="flexSwitchCheckSpirecrest" data-i18n="expansion.spirecrest">Spirecrest</label>
-                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckSpirecrest">
-                            </div>
-                            <div class="form-check form-switch" onchange="app.updateExpansions()">
-                                <label class="form-check-label" for="flexSwitchCheckMistwood" data-i18n="expansion.mistwood">Mistwood</label>
-                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckMistwood">
-                            </div>
-                            <div class="form-check form-switch" onchange="app.updateExpansions()">
-                                <label class="form-check-label" for="flexSwitchCheckNewleaf" data-i18n="expansion.newleaf">Newleaf</label>
-                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckNewleaf">
-                            </div>
                         </ul>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div id="cards" class="panel" role="tablist" aria-multiselectable="true">
             </div>
         </div>
@@ -466,12 +195,6 @@
             <div class="tab-content" id="nav-tabContent">
                 <div id="alert-cardlimit" class="alert alert-warning fade" role="alert" data-i18n="text.cardlimit"
                     style="display: none"></div>
-                <div id="alert-adornmentlimit" class="alert alert-warning fade" role="alert" data-i18n="text.adornmentlimit"
-                    style="display: none"></div>
-                <div id="alert-expeditionlimit" class="alert alert-warning fade" role="alert" data-i18n="text.expeditionlimit"
-                    style="display: none"></div>
-                <div id="alert-discoverylimit" class="alert alert-warning fade" role="alert" data-i18n="text.discoverylimit"
-                    style="display: none"></div>
                 <div class="tab-pane fade show active" id="nav-p1" role="tabpanel" aria-labelledby="nav-p1-tab"
                     tabindex="0"></div>
                 <div class="tab-pane fade" id="nav-p2" role="tabpanel" aria-labelledby="nav-p2-tab" tabindex="0">
@@ -487,54 +210,50 @@
                     </div>
                     <h3 data-i18n="gen.points"></h3>
                     <div class="card">
-                        <p for="value_points" id="value_points_badge"
-                            class="form-label badge text-bg-warning">0</p>
-                        <input id="value_points" type="range" class="form-range" min="0" value="0" max="50"
+                        <p for="value_points" id="value_points_badge" class="form-label badge text-bg-warning">0</p>
+                        <input id="value_points" type="range" class="form-range" min="0" value="0" max="20"
                             oninput="app.setActivePlayerPoints()">
+                    </div>
+                    <h3 data-i18n="gen.ship"></h3>
+                    <div class="card">
+                        <p for="value_ship_steps" id="value_ship_steps_badge" class="form-label badge text-bg-warning">0
+                        </p>
+                        <input id="value_ship_steps" type="range" class="form-range" min="0" value="0" max="40"
+                            oninput="app.setActivePlayerShipSteps()">
                     </div>
                 </div>
             </div>
         </div>
         <div id="modal_window" class="modal fade" data-bs-backdrop="static" tabindex="-1">
             <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 id="modal_title" class="modal-title">Modal title</h5>
-                  <button type="button" class="btn-close" onclick="app.modal_abort()" aria-label="Close"></button>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="modal_title" class="modal-title">Modal title</h5>
+                        <button type="button" class="btn-close" onclick="app.modal_abort()" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modal_text">Text</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="app.modal_abort()"
+                            data-i18n="text.no"></button>
+                        <button type="button" class="btn btn-primary" onclick="app.modal_accept()"
+                            data-i18n="text.yes"></button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                  <p id="modal_text">Text</p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" onclick="app.modal_abort()" data-i18n="text.no"></button>
-                  <button type="button" class="btn btn-primary" onclick="app.modal_accept()" data-i18n="text.yes"></button>
-                </div>
-              </div>
             </div>
-          </div>
-          
-        <div id="photographer_modal" class="modal fade" tabindex="-1">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 id="photographer_modal_title" class="modal-title" data-i18n="text.photographer_modal_title"></h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div id="photographer_modal_body" class="modal-body">
-                </div>
-              </div>
-            </div>
-          </div>
+        </div>
     </main>
     <footer>
         <div id="developmentlink">
-            <p>If you encounter errors, feel free to visit the <a href="https://github.com/tadeaustria/EverdellScore">development page</a> and post an issue or <a href="mailto:tade_tirol@hotmail.com">send me an email</a>.</p>
-            <p>If you want to help adding your language, find the <a href="i18n/en/translation.json">English template here</a>.</p>
+            <p>If you encounter errors, feel free to visit the <a
+                    href="https://github.com/tadeaustria/FarshoreScore">development page</a> and post an issue or <a
+                    href="mailto:tade_tirol@hotmail.com">send me an email</a>.</p>
+            <p>If you want to help adding your language, find the <a href="i18n/en/translation.json">English template
+                    here</a>.</p>
         </div>
-        <!-- <div id="legal-text">
-        </div> -->
         <div id="version">
-            <p>v1.5.2</p>
+            <p>v1.0.0</p>
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"

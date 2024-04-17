@@ -1,29 +1,11 @@
 class Player {
     //base game
     town = [];
-    basicEvents = [];
-    specialEvents = [];
-    journeys = [];
+    maps = [];
     points = 0;
     leftResources = {
     }
-
-    //bellfaire
-    garlandAchievemenPoints = 0;
-
-    //pearlbrook
-    wonders = [];
-    adornments = [];
-
-    //spirecrest
-    expeditions = [];
-    discoveries = [];
-
-    //newleaf
-    visitors = [];
-    photographerChoiceCardName = null;
-
-    playerpowername = null;
+    ship_steps = 0;
 
     divName;
     #app;
@@ -36,8 +18,7 @@ class Player {
     }
 
     getMaxSpace() {
-        //Unique main road extends the city by one space and each legendary card extends the city
-        return 15 + this.findCountCard(basecards['mainroad']) + this.findCountRarity(RARITY.legendary);
+        return 15;
     }
 
     getOccupiedSpaces() {
@@ -79,68 +60,14 @@ class Player {
 
     removeTown(cardIndex) {
         let card = this.town.splice(cardIndex, 1)[0];
-        if (card.name == 'photographer')
-            this.photographerChoiceCardName = null;
         this.showPlayer();
         return card;
     }
 
-    addBasicEvent(event) {
-        this.basicEvents.push(event);
-        this.showPlayer();
-    }
-
-    removeBasicEvent(eventIndex) {
-        let event = this.basicEvents.splice(eventIndex, 1)[0];
-        this.showPlayer();
-        return event.name;
-    }
-
-    addSpecialEvent(event) {
-        this.specialEvents.push(event);
-        this.showPlayer();
-    }
-
-    removeSpecialEvent(eventIndex) {
-        let event = this.specialEvents.splice(eventIndex, 1)[0];
-        this.showPlayer();
-        return event.name;
-    }
-
-    removeJourney(journeyIndex) {
-        let value = this.journeys.splice(journeyIndex, 1)[0];
+    removeMap(mapIndex) {
+        let value = this.maps.splice(mapIndex, 1)[0];
         this.showPlayer();
         return value;
-    }
-
-    removeWonder(wonderIndex) {
-        let wonder = this.wonders.splice(wonderIndex, 1)[0];
-        this.showPlayer();
-        return wonder.name;
-    }
-
-    removeAdornment(adornmentIndex) {
-        let adornment = this.adornments.splice(adornmentIndex, 1)[0];
-        this.showPlayer();
-        return adornment.name;
-    }
-
-    removeExpedition(expeditionIndex) {
-        let expedition = this.expeditions.splice(expeditionIndex, 1)[0];
-        this.showPlayer();
-        return expedition.name;
-    }
-
-    removeDiscovery(discoveryIndex) {
-        let discovery = this.discoveries.splice(discoveryIndex, 1)[0];
-        this.showPlayer();
-        return discovery.name;
-    }
-
-    removeVisitor(visitorIndex) {
-        let visitor = this.visitors.splice(visitorIndex, 1)[0];
-        this.showPlayer();
-        return visitor.name;
     }
 
     findCountFct(findfunction) {
@@ -167,66 +94,27 @@ class Player {
         return this.findCountFct((card) => { return card.name == cardToFind.name; });
     }
 
-    findCountHusbandMatches() {
-        return this.getWifeCount4AdditionalPoints() + this.findCountCard(basecards['mayberrymatriarch']);
-    }
-
     hasData() {
         return this.town.length > 0 ||
-            this.basicEvents.length > 0 ||
-            this.specialEvents.length > 0 ||
-            this.journeys.length > 0 ||
-            this.wonders.length > 0 ||
-            this.adornments.length > 0 ||
-            this.expeditions.length > 0 ||
-            this.discoveries.length > 0 ||
-            this.visitors.length > 0 ||
             this.points > 0 ||
+            this.ship_steps > 0 ||
             Object.values(this.leftResources).reduce((prev, val) => prev || val > 0, false);
     }
 
-    getWifeCount4AdditionalPoints() {
-        let base = this.findCountCard(basecards['wife']);
-        if (this.photographerChoiceCardName == 'wife') {
-            base++;
-        }
-        return base;
-    }
-
-    //minimal count of wife or husband is number of pairs
-    getWifeHusbandPairs() {
-        // reduce husbands, if mayberrymatriarch is active, she always needs at least one husband
-        return Math.min(Math.max(this.findCountCard(basecards['husband']) - this.findCountCard(basecards['mayberrymatriarch']), 0), this.getWifeCount4AdditionalPoints());
-    }
-
-    getWifeAdditionalPoints() {
-        return 3 * this.getWifeHusbandPairs();
+    getShipPoints(){
+        return SHIP[this.ship_steps];
     }
 
     getTotalPoints() {
         //Sum up all points
         return this.town.reduce((prev, card) => prev + card.points + card.getAdditionalPoints(this),
-            this.specialEvents.reduce((prev, spevent) => prev + spevent.points,
-                this.basicEvents.reduce((prev, event) => prev + event.points,
-                    this.journeys.reduce((prev, journeyPoints) => prev + journeyPoints,
-                        this.wonders.reduce((prev, wonder) => prev + wonder.points,
-                            this.adornments.reduce((prev, adornments) => prev + adornments.getPoints(this),
-                                this.expeditions.reduce((prev, expedition) => prev + expedition.points,
-                                    this.discoveries.reduce((prev, discovery) => prev + discovery.getPoints(this),
-                                        this.visitors.reduce((prev, visitor) => prev + visitor.getPoints(this),
-                                            this.points + this.getWifeAdditionalPoints() + this.garlandAchievemenPoints + 2 * this.leftResources[RESOURCES.pearl])))))))));
+                    this.maps.reduce((prev, map) => prev + map.getAdditionalPoints(this),
+                        this.getShipPoints() + this.points + 2 * this.leftResources[RESOURCES.treasure]));
     }
 
     areLeftoversRequired() {
         //If Architect is in town or scale as adornment or Architect is copied through photographer
-        return this.town.includes(basecards['architect']) ||
-            this.adornments.includes(adornments["scales"]) ||
-            this.photographerChoiceCardName == 'architect' ||
-            this.visitors.includes(visitors['diggsdeepwell']) ||
-            this.visitors.includes(visitors['frinstickly']) ||
-            this.visitors.includes(visitors['piffquillglow']) ||
-            this.visitors.includes(visitors['sirtrivleqsmarqwill']) ||
-            this.visitors.includes(visitors['wimblewuffle']);
+        return true;
     }
 
     updateLeftOvers() {
@@ -238,51 +126,26 @@ class Player {
     }
 
     showLeftOvers() {
-        if (this.#app.pearlbrook) {
-            $("#leftOverArea").show();
-            $("#area_pearl").show();
-            $("#area_card").show();
-        } else {
-            $("#area_pearl").hide();
-            $("#area_card").hide();
-            if (this.areLeftoversRequired())
-                $("#leftOverArea").show();
-            else
-                $("#leftOverArea").hide();
+        $("#leftOverArea").show();
+        for(let res in Object.values(RESOURCES)){
+            $("#area_" + res).hide();    
         }
+        $("#area_treasure").show();
     }
 
     showPlayer() {
         let template = Handlebars.compile($("#player-template").html());
 
-        this.specialEvents.forEach((event) => { event.points = event.getPoints(app, this); })
-
         let displayedTown = this.town.map((card) => Object.assign({ addPoints: card.getAdditionalPoints(this) }, card));
-        let displayedAdornments = this.adornments.map((adornment) => Object.assign({ points: adornment.getPoints(this) }, adornment));
-        let displayedDiscoveries = this.discoveries.map((discovery) => Object.assign({ points: discovery.getPoints(this) }, discovery));
-        let displayedVisitors = this.visitors.map((visitor) => Object.assign({ points: visitor.getPoints(this) }, visitor));
+        let displayedMaps = this.maps.map((map) => Object.assign({ points: map.getAdditionalPoints(this) }, map));
 
         let html = template({
             cards: displayedTown,
             cardCount: this.getOccupiedSpaces(),
             cardMax: this.getMaxSpace(),
             cardCountPerc: 100 * this.getOccupiedSpaces() / this.getMaxSpace(),
-            additionalWifePoints: this.getWifeAdditionalPoints(),
-            basicEvents: this.basicEvents,
-            specialEvents: this.specialEvents,
-            wonders: this.wonders,
-            adornments: displayedAdornments,
-            expeditions: this.expeditions,
-            discoveries: displayedDiscoveries,
-            visitors: displayedVisitors,
-            journeys: this.journeys,
-            award: this.#app.activeAward && this.garlandAchievemenPoints > 0 ? {
-                name: this.#app.activeAward.name,
-                points: this.garlandAchievemenPoints
-            } : null,
-            nav: this.divName,
-            playerpower: this.playerpowername,
-            photographerCardName: this.photographerChoiceCardName ? '(' + getCardName(basecards[this.photographerChoiceCardName]) + ')' : null
+            maps: displayedMaps,
+            nav: this.divName
         });
 
         this.showLeftOvers();
